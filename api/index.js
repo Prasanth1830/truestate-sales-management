@@ -1,10 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 
+// Create Express app
 const app = express();
 
-app.use(cors());
 app.use(express.json());
+app.use(cors({
+  origin: '*',
+  credentials: true
+}));
 
 // Sample sales data embedded directly
 const salesData = [
@@ -489,3 +493,6 @@ app.use((err, req, res, next) => {
 // Export for Vercel
 module.exports = app;
 module.exports.default = app;
+
+// For Vercel serverless function
+handler = app;

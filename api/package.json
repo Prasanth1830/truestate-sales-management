@@ -1,0 +1,10 @@
+{
+  "name": "truestate-api",
+  "version": "1.0.0",
+  "description": "TruEstate Sales Management API",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}
