@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const salesRoutes = require('./routes/salesRoutes');
 
 const app = express();
@@ -13,7 +14,14 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from frontend build
-app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+// Try multiple paths for flexibility in different deployment environments
+const distPath = path.join(__dirname, '../../frontend/dist') || 
+                 path.join(__dirname, '../frontend/dist') ||
+                 path.join(__dirname, '../../dist');
+
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+}
 
 // Routes
 app.use('/api/sales', salesRoutes);
@@ -25,7 +33,12 @@ app.get('/api/health', (req, res) => {
 
 // Serve frontend for all non-API routes (for client-side routing)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
+  const indexPath = path.join(distPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).json({ success: false, error: 'Frontend not found. Build frontend first.' });
+  }
 });
 
 // Error handler

@@ -3,18 +3,13 @@ import axios from 'axios';
 
 // Get API base URL from environment variable or construct from current location
 const getAPIBaseUrl = () => {
-  // In production, use the same origin as the frontend
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
+  // In production on Vercel, use /api
+  if (!import.meta.env.DEV) {
+    return '/api';
   }
   
   // In development, use localhost:5000
-  if (import.meta.env.DEV) {
-    return 'http://localhost:5000/api';
-  }
-  
-  // In production, assume backend is on same server/domain
-  return `${window.location.protocol}//${window.location.host}/api`;
+  return 'http://localhost:5000/api';
 };
 
 const API_BASE_URL = getAPIBaseUrl();
